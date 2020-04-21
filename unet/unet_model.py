@@ -50,9 +50,9 @@ class UNet_Small(nn.Module):
         self.down2 = Down(128, 256)
         factor = 2 if bilinear else 1
         self.down3 = Down(256, 512 // factor)
-        self.up1 = Up(512, 256, bilinear)
-        self.up2 = Up(256, 128, bilinear)
-        self.up3 = Up(128, 64 * factor, bilinear)
+        self.up1 = Up(512, 256 // factor, bilinear)
+        self.up2 = Up(256, 128 // factor, bilinear)
+        self.up3 = Up(128, 64, bilinear)
         self.outc = OutConv(64, n_classes)
 
     def forward(self, x):
