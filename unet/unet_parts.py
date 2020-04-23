@@ -76,3 +76,20 @@ class OutConv(nn.Module):
 
     def forward(self, x):
         return self.conv(x)
+
+class OutConv2(nn.Module):
+    """(convolution => [BN] => ReLU) * 2"""
+    def __init__(self, in_channels, out_channels, mid_channels=None):
+        super(OutConv2, self).__init__()
+        if not mid_channels:
+            mid_channels = in_channels // 2
+
+        self.double_conv = nn.Sequential(
+            nn.Conv2d(in_channels, mid_channels, kernel_size=3, padding=1),
+            nn.BatchNorm2d(mid_channels),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(mid_channels, out_channels, kernel_size=3, padding=1),
+        )
+
+    def forward(self, x):
+        return self.double_conv(x)

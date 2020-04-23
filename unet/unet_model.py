@@ -1,5 +1,6 @@
 """ Full assembly of the parts to form the complete network """
 
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -72,6 +73,44 @@ class UNet_Sigmoid(nn.Module):
         logits = self.sigmoid(self.outc(x))
 
         return logits
+
+class UNet_Sigmoid_3Tail(nn.Module):
+    def __init__(self, n_channels, n_classes, bilinear=True):
+        super(UNet_Sigmoid_3Tail, self).__init__()
+        self.n_channels = n_channels
+        self.n_classes = n_classes
+        self.bilinear = bilinear
+        self.sigmoid = nn.Sigmoid()
+
+        self.inc = DoubleConv(n_channels, 64)
+        self.down1 = Down(64, 128)
+        self.down2 = Down(128, 256)
+        self.down3 = Down(256, 512)
+        factor = 2 if bilinear else 1
+        self.down4 = Down(512, 1024 // factor)
+        self.up1 = Up(1024, 512 // factor, bilinear)
+        self.up2 = Up(512, 256 // factor, bilinear)
+        self.up3 = Up(256, 128 // factor, bilinear)
+        self.up4 = Up(128, 64, bilinear)
+        self.outc1 = OutConv(64, n_classes)
+        self.outc2 = OutConv(64, n_classes)
+        self.outc3 = OutConv(64, n_classes)
+
+    def forward(self, x):
+        x1 = self.inc(x)
+        x2 = self.down1(x1)
+        x3 = self.down2(x2)
+        x4 = self.down3(x3)
+        x5 = self.down4(x4)
+        x = self.up1(x5, x4)
+        x = self.up2(x, x3)
+        x = self.up3(x, x2)
+        x = self.up4(x, x1)
+        x_out1 = self.sigmoid(self.outc1(x))
+        x_out2 = self.sigmoid(self.outc2(x))
+        x_out3 = self.sigmoid(self.outc3(x))
+
+        return torch.cat((x_out1, x_out2, x_out3), dim=1)
 
 class UNet_Small(nn.Module):
     def __init__(self, n_channels, n_classes, bilinear=True):
