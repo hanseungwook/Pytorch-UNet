@@ -144,7 +144,7 @@ class UNet_Sigmoid_NTail_128(nn.Module):
         x = self.up2(x, x3)
         x = self.up3(x, x2)
         x = self.up4(x, x1)
-        x_out = torch.empty(0)
+        x_out = torch.empty(0, device=x.device)
 
         for layer in self.outc_modules:
             cur_x_out = layer(x)
