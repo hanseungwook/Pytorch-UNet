@@ -129,10 +129,10 @@ class UNet_Sigmoid_NTail_128(nn.Module):
         self.up1 = Up(1024, 512 // factor, bilinear)
         self.up2 = Up(512, 256 // factor, bilinear)
         self.up3 = Up(256, 128 // factor, bilinear)
-        self.up4 = Up(128, 32, bilinear)
+        self.up4 = Up(128, 64, bilinear)
         self.outc_modules = nn.ModuleList()
         for i in range(n_tails):
-            self.outc_modules.append(OutConv(32, n_classes))
+            self.outc_modules.append(OutConv(64, n_classes))
 
     def forward(self, x):
         x1 = self.inc(x)
