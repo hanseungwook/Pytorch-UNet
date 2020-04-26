@@ -78,7 +78,6 @@ class OutConv(nn.Module):
         return self.conv(x)
 
 class OutConv2(nn.Module):
-    """(convolution => [BN] => ReLU) * 2"""
     def __init__(self, in_channels, out_channels, mid_channels=None):
         super(OutConv2, self).__init__()
         if not mid_channels:
