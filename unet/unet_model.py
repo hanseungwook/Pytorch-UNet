@@ -204,10 +204,10 @@ class UNet_NTail_128_Mod(nn.Module):
         self.down1 = Down(512, 512)
         self.down2 = Down(512, 512)
         factor = 2 if bilinear else 1
-        self.down3 = Down(512, 1024)
+        self.down3 = Down(512, 512)
         self.up1 = Up(1024, 512, bilinear)
-        self.up2 = Up(512, 512, bilinear)
-        self.up3 = Up(512, 512, bilinear)
+        self.up2 = Up(1024, 512, bilinear)
+        self.up3 = Up(1024, 512, bilinear)
         self.outc_modules = nn.ModuleList()
         for i in range(n_tails):
             self.outc_modules.append(OutConv2(512, n_classes))
