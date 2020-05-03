@@ -55,7 +55,7 @@ class UNet1(nn.Module):
         self.down4 = Down(512, 1024 // factor)
         self.up1 = Up(1024, 512 // factor, bilinear)
         self.up2 = Up(512, 256 // factor, bilinear)
-        self.up3 = Up(256, 128 // factor, bilinear)
+        self.up3 = Up(256, 256 // factor, bilinear)
         self.up4 = Up(128, 128, bilinear)
         self.outc = OutConv(128, n_classes)
 
