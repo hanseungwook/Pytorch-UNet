@@ -246,10 +246,8 @@ class UNet_NTail_32_Mod(nn.Module):
         x1 = self.inc(x)
         x2 = self.down1(x1)
         x3 = self.down2(x2)
-        x4 = self.down3(x3)
-        x = self.up1(x4, x3)
-        x = self.up2(x, x2)
-        x = self.up3(x, x1)
+        x = self.up1(x3, x2)
+        x = self.up2(x, x1)
         x_out = torch.empty(0, device=x.device)
 
         for layer in self.outc_modules:
